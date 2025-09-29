@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>RXLOG · App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header>
+      <strong>RXLOG</strong>
+      <nav>
+        <a href="#register" id="nav-register">Register</a>
+        <a href="#update" id="nav-update">Update</a>
+        <a href="#search" id="nav-search">Search</a>
+      </nav>
+    </header>
+    <main>
+      <section id="page-register" class="card hidden">
+        <h2>Register a book</h2>
+        <div class="grid">
+          <div><label>Width (cm)</label><input id="rwidth" type="number" step="0.1" placeholder="e.g., 13.5"></div>
+          <div><label>Height (cm)</label><input id="rheight" type="number" step="0.1" placeholder="e.g., 21"></div>
+        </div>
+        <div class="grid">
+          <div><label>Suggested barcode</label><input id="reg-preview-barcode" readonly></div>
+          <div><label>Live prefix</label><input id="reg-prefix" readonly></div>
+          <div><label>Pool status</label><input id="reg-pool-note" readonly></div>
+        </div>
+        <div class="grid">
+          <div><label>Author</label><input id="rauthor" /></div>
+          <div><label>Keyword 1 (required)</label><input id="kw1" /></div>
+          <div><label>Keyword 1 position</label><input id="pos1" type="number" placeholder="0–19" /></div>
+          <div><label>Publisher</label><input id="rpub" /></div>
+          <div><label>Pages</label><input id="rpages" type="number" placeholder="e.g., 300" /></div>
+        </div>
+        <h3>Optional title keywords</h3>
+        <div class="grid">
+          <div><label>Keyword 2 (optional)</label><input id="kw2" /></div>
+          <div><label>Keyword 2 position</label><input id="pos2" type="number" placeholder="0–19" /></div>
+          <div><label>Keyword 3 (optional)</label><input id="kw3" /></div>
+          <div><label>Keyword 3 position</label><input id="pos3" type="number" placeholder="0–19" /></div>
+        </div>
+        <div class="actions"><button id="btnCreate" disabled>Submit</button> <span id="rstatus" class="small"></span></div>
+      </section>
+
+      <section id="page-update" class="card hidden">
+        <h2>Update a book</h2>
+        <div class="grid">
+          <div><label>Book ID</label><input id="uid" placeholder="Mongo ObjectId" /></div>
+          <div><label>&nbsp;</label><button id="btnLoad">Load</button></div>
+        </div>
+        <div id="uform" class="hidden">
+          <div class="grid">
+            <div><label>Author</label><input id="uauthor" /></div>
+            <div><label>Publisher</label><input id="upub" /></div>
+            <div><label>Pages</label><input id="upages" type="number" /></div>
+          </div>
+          <h3>Title keywords</h3>
+          <div class="grid">
+            <div><label>Keyword 1</label><input id="ukw1" /></div>
+            <div><label>Keyword 1 position</label><input id="upos1" type="number" /></div>
+            <div><label>Keyword 2</label><input id="ukw2" /></div>
+            <div><label>Keyword 2 position</label><input id="upos2" type="number" /></div>
+            <div><label>Keyword 3</label><input id="ukw3" /></div>
+            <div><label>Keyword 3 position</label><input id="upos3" type="number" /></div>
+          </div>
+          <button id="btnSave">Save</button> <span id="ustatus" class="small"></span>
+        </div>
+      </section>
+
+      <section id="page-search" class="card hidden">
+        <h2>Search</h2>
+        <div class="grid">
+          <div><label>Author contains</label><input id="sAuthor" /></div>
+          <div><label>Keyword contains</label><input id="sWord" /></div>
+          <div><label>Keyword position</label><input id="sPos" type="number" placeholder="0–19 (optional)" /></div>
+        </div>
+        <button id="btnSearch">Search</button> <span id="search-status" class="small"></span>
+        <div id="results"></div>
+      </section>
+    </main>
+
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>

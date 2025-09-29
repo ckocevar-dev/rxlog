@@ -1,0 +1,1 @@
+const express = require('express'); const router = express.Router(); const c = require('../controllers/barcodes.controller'); router.get('/pool-status', c.poolStatus); router.get('/', c.search); router.get('/prefix-by-size', c.prefixBySize); router.get('/preview-by-size', c.previewBySize); module.exports = router;

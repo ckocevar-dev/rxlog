@@ -1,0 +1,12 @@
+{
+  "name": "rxlog",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build:frontend": "npm --prefix frontend run build && rm -rf backend/public && mkdir -p backend/public && cp -r frontend/dist/* backend/public/",
+    "start:backend": "npm --prefix backend start",
+    "release:barcodes": "npm --prefix backend run release:barcodes"
+  }
+}
