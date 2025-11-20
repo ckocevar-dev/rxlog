@@ -1,0 +1,20 @@
+# OS junk
+.DS_Store
+
+# Git internals (in case you ever copy again)
+.git/
+
+# IDE
+.idea/
+
+# Gradle
+.gradle/
+build/
+
+# Logs (none now, but good to have)
+*.log
+logs/
+
+# Misc
+ok
+build.gradle.bak

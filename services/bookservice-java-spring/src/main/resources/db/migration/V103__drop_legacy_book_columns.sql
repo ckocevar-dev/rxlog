@@ -1,0 +1,7 @@
+BEGIN;
+ALTER TABLE public.books
+  DROP COLUMN IF EXISTS title,
+  DROP COLUMN IF EXISTS isbn,
+  DROP COLUMN IF EXISTS created_at,
+  DROP COLUMN IF EXISTS updated_at;
+COMMIT;
