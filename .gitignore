@@ -1,20 +1,62 @@
+########################
 # OS junk
+########################
 .DS_Store
+Thumbs.db
 
-# Git internals (in case you ever copy again)
-.git/
-
-# IDE
+########################
+# IDE / editor
+########################
 .idea/
+*.iml
+.vscode/
+*.swp
+*~
+*.tmp
 
-# Gradle
+########################
+# Gradle / Java / Kotlin
+########################
 .gradle/
 build/
+**/build/
+out/
+*.class
 
-# Logs (none now, but good to have)
-*.log
+# If you ever use IntelliJ out dirs
+out/
+
+########################
+# Node / React
+########################
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+########################
+# Go
+########################
+**/bin/
+**/*.test
+**/*.exe
+
+########################
+# Logs
+########################
 logs/
+**/logs/
+*.log
 
-# Misc
-ok
-build.gradle.bak
+########################
+# Office / temp docs
+########################
+*.odt
+~$*.odt
+.~lock.*#
+
+########################
+# Backups / misc
+########################
+*.bak
