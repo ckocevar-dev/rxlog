@@ -1,3 +1,3 @@
 rootProject.name = 'rxlog'
-include 'services:register-java-spring'
+include 'services:bookservice-java-spring'
 include 'gateway-java-spring'

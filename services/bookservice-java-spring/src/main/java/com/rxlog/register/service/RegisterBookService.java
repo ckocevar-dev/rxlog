@@ -13,37 +13,30 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class RegisterBookService {
 
-    private final BookDao bookDao;
+  private final BookDao bookDao;
 
-    public RegisterBookService(BookDao bookDao) {
-        this.bookDao = bookDao;
-    }
+  public RegisterBookService(BookDao bookDao) {
+    this.bookDao = bookDao;
+  }
 
-    /**
-     * Produces a „draft“ for a new book.
-     * In this demo we don't save the draft but just returnsback width and height.
-     */
-    public CreateDraftResponse createDraft(CreateDraftRequest req) {
-        return new CreateDraftResponse(
-                null,          // no persisted draft in demo
-                req.width(),
-                req.height()
-        );
-    }
+  /**
+   * Produces a „draft“ for a new book. In this demo we don't save the draft but just returnsback
+   * width and height.
+   */
+  public CreateDraftResponse createDraft(CreateDraftRequest req) {
+    return new CreateDraftResponse(
+        null, // no persisted draft in demo
+        req.width(),
+        req.height());
+  }
 
-    /**
-     * Writes a book to db and returns the bookId + barcode + status.
-     */
-    @Transactional
-    public RegisterBookResponse registerBook(RegisterBookRequest req) {
-        String bookId = bookDao.insert(req);
+  /** Writes a book to db and returns the bookId + barcode + status. */
+  @Transactional
+  public RegisterBookResponse registerBook(RegisterBookRequest req) {
+    String bookId = bookDao.insert(req);
 
-        System.out.println(">>> registerBook: id=" + bookId + ", barcode=" + req.barcode());
+    System.out.println(">>> registerBook: id=" + bookId + ", barcode=" + req.barcode());
 
-        return new RegisterBookResponse(
-                bookId,
-                req.barcode(),
-                req.readingStatus()
-        );
-    }
+    return new RegisterBookResponse(bookId, req.barcode(), req.readingStatus());
+  }
 }

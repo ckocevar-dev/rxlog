@@ -1,11 +1,9 @@
 spring:
   datasource:
-    url: ${REGISTER_DB_URL:jdbc:postgresql://postgres:5432/rxlog}
-    username: ${REGISTER_DB_USER:rxlog}
-    password: ${REGISTER_DB_PASSWORD:rxlog}
+    url: jdbc:postgresql://localhost:5432/rxlog
+    username: rxlog
+    password: rxlog
     driver-class-name: org.postgresql.Driver
-
-
 
   flyway:
     enabled: true

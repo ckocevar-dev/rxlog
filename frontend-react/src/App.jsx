@@ -314,38 +314,59 @@ export default function App() {
     }));
   }
 
+  // NEW, safer version
   async function saveRow(id) {
-    updateRow(id, (r) => ({ ...r, _saving: true, _msg: '' }));
-    let row;
-    setResults((rows) => {
-      row = rows.find((r) => r.id === id);
-      return rows;
-    });
-    if (!row) return;
+    // 1) mark row as saving
+    setResults((rows) =>
+      rows.map((r) => (r.id === id ? { ...r, _saving: true, _msg: '' } : r)),
+    );
 
+    // 2) snapshot current row
+    const row = results.find((r) => r.id === id);
+    if (!row) {
+      setResults((rows) =>
+        rows.map((r) => (r.id === id ? { ...r, _saving: false, _msg: 'Nicht gefunden' } : r)),
+      );
+      return;
+    }
+
+    const orig = row._orig || {};
     const payload = {};
-    if (row.pages !== row._orig.pages && row.pages !== '') payload.pages = Number(row.pages);
-    if (row.readingStatus !== row._orig.readingStatus) payload.readingStatus = row.readingStatus;
-    if (row.topBook !== row._orig.topBook) payload.topBook = !!row.topBook;
+
+    if (row.pages !== orig.pages && row.pages !== '') {
+      payload.pages = Number(row.pages);
+    }
+    if (row.readingStatus !== orig.readingStatus) {
+      payload.readingStatus = row.readingStatus;
+    }
+    if (row.topBook !== orig.topBook) {
+      payload.topBook = !!row.topBook;
+    }
 
     // parse width/height raw → mm
     const parsedW = parseDimensionToMM(row.widthRawRow);
     const parsedH = parseDimensionToMM(row.heightRawRow);
 
-    const widthChanged = (parsedW || null) !== (row._orig.widthMM || null);
-    const heightChanged = (parsedH || null) !== (row._orig.heightMM || null);
+    const widthChanged = (parsedW || null) !== (orig.widthMM || null);
+    const heightChanged = (parsedH || null) !== (orig.heightMM || null);
     if (widthChanged) payload.width = parsedW || null;
     if (heightChanged) payload.height = parsedH || null;
 
     // barcodes: replace set if changed
     const barcodesNormalized = splitBarcodes(row.barcodesInput);
-    const origBarcodesNormalized = splitBarcodes(row._orig.barcodesInput);
+    const origBarcodesNormalized = splitBarcodes(orig.barcodesInput || '');
     const sameLen = barcodesNormalized.length === origBarcodesNormalized.length;
-    const sameSet = sameLen && barcodesNormalized.every((b, i) => b === origBarcodesNormalized[i]);
+    const sameSet =
+      sameLen && barcodesNormalized.every((b, i) => b === origBarcodesNormalized[i]);
     if (!sameSet) payload.barcodes = barcodesNormalized;
 
+    // 3) no changes → reset saving and exit
     if (Object.keys(payload).length === 0) {
-      updateRow(id, (r) => ({ ...r, _saving: false, _msg: 'Keine Änderungen' }));
+      setResults((rows) =>
+        rows.map((r) =>
+          r.id === id ? { ...r, _saving: false, _msg: 'Keine Änderungen' } : r,
+        ),
+      );
       return;
     }
 
@@ -355,33 +376,46 @@ export default function App() {
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error(`Update fehlgeschlagen: ${res.status}`);
+      if (!res.ok) {
+        throw new Error(`Update fehlgeschlagen: ${res.status}`);
+      }
 
-      // success → update local _orig to current
-      updateRow(id, (r) => {
-        const nextWidthMM = widthChanged ? parsedW || null : r.widthMM;
-        const nextHeightMM = heightChanged ? parsedH || null : r.heightMM;
-        const nextBarcodesInput = !sameSet ? barcodesNormalized.join(', ') : r.barcodesInput;
+      // 4) success: clear _saving, update _orig
+      setResults((rows) =>
+        rows.map((r) => {
+          if (r.id !== id) return r;
 
-        return {
-          ...r,
-          _saving: false,
-          _msg: 'Gespeichert',
-          widthMM: nextWidthMM,
-          heightMM: nextHeightMM,
-          barcodesInput: nextBarcodesInput,
-          _orig: {
-            pages: r.pages,
-            readingStatus: r.readingStatus,
-            topBook: r.topBook,
+          const nextWidthMM = widthChanged ? parsedW || null : r.widthMM;
+          const nextHeightMM = heightChanged ? parsedH || null : r.heightMM;
+          const nextBarcodesInput = !sameSet
+            ? barcodesNormalized.join(', ')
+            : r.barcodesInput;
+
+          return {
+            ...r,
+            _saving: false,
+            _msg: 'Gespeichert',
             widthMM: nextWidthMM,
             heightMM: nextHeightMM,
             barcodesInput: nextBarcodesInput,
-          },
-        };
-      });
+            _orig: {
+              pages: r.pages,
+              readingStatus: r.readingStatus,
+              topBook: r.topBook,
+              widthMM: nextWidthMM,
+              heightMM: nextHeightMM,
+              barcodesInput: nextBarcodesInput,
+            },
+          };
+        }),
+      );
     } catch (e) {
-      updateRow(id, (r) => ({ ...r, _saving: false, _msg: `Fehler: ${e.message}` }));
+      // 5) error: clear _saving and show error
+      setResults((rows) =>
+        rows.map((r) =>
+          r.id === id ? { ...r, _saving: false, _msg: `Fehler: ${e.message}` } : r,
+        ),
+      );
     }
   }
 
